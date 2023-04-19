@@ -26,3 +26,11 @@ class UserSurvey(models.Model):
     want_mbti_4 = models.CharField(max_length=5)
 
     user_survey_at = models.DateTimeField(auto_now_add=True)
+
+    Q_pid_list = models.TextField(null=True)
+
+    def __str__(self) -> str:
+        self.is_male = "여자"
+        if self.user_sex:
+            self.is_male = "남자"
+        return f'{self.user_name} {self.user_age} {self.is_male}'
