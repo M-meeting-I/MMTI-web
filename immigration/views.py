@@ -87,7 +87,7 @@ def mbti_check(user, age_set) -> list:
     
     return result
 
-def Q_pid(user):
+def Q_pid(user) -> list:
     # 나이 필터
     age_result = age_check(user)
     # mbti 필터
@@ -103,13 +103,15 @@ def Q_pid(user):
 
 
 def matching_render(request):
-    youyou = UserSurvey.objects.get(user_name='심규원')
-    result = Q_pid(youyou)
+    
+    male_set = UserSurvey.objects.filter(user_sex=True).all()
+    result = {}
+
+    for i in male_set:
+        result[i.pk] = Q_pid[i]
 
     return render(
         request,
         'immigration/result_page.html',
-        {
-            'result':result,
-        }
+        result
     )
