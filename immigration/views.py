@@ -106,4 +106,10 @@ def matching_render(request):
     youyou = UserSurvey.objects.get(user_name='심규원')
     result = Q_pid(youyou)
 
-    return HttpResponse(result)
+    return render(
+        request,
+        'immigration/result_page.html',
+        {
+            'result':result,
+        }
+    )

@@ -14,7 +14,7 @@ class UserSurvey(models.Model):
     user_mbti_4 = models.CharField(max_length=5)
 
     user_school = models.CharField(max_length=20)
-    user_image = models.ImageField(upload_to='immigration/images/%Y/%m/%d/')
+    user_image = models.ImageField(upload_to='immigration/images/%Y/%m/%d/', null=True)
     user_kakaoid = models.CharField(max_length=40)
 
     want_age_min = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(40)])
