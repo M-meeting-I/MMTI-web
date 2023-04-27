@@ -1,24 +1,9 @@
+
 from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.views.generic import CreateView
 from immigration.models import UserSurvey
-from django.http import HttpResponse
 from django.db.models import Q
-import json
 
-# Create your views here.
 
-class UserSurveyCreate(CreateView):
-    model = UserSurvey
-    # 모델이름_form.html 에 연결 (모델이름 소문자!)
-    fields = "__all__" # ['first_name', 'last_name', ... ]
-    success_url = reverse_lazy('immigration:thankyou')
-
-def thankyou_view(request):
-    return render(
-        request,
-        'thankyou.html',
-    )
 
 def age_check(user):
     result = UserSurvey.objects.filter(~Q(user_sex=user.user_sex)
@@ -64,9 +49,15 @@ def Q_pid(user):
     # mbti 필터
     mbti_result = mbti_check(user, age_result)
     # 적합자 리스트 저장
+    # pk_list = []
+    # for i in mbti_result:
+    #     pk_list.append(i.pk)
+
+    # user.Q_pid_list = json.dumps(pk_list)
+
     for i in mbti_result:
         u = i.user_model
-        user.Q_pid_list.add(u)
+        user.object.Q_pid_list.add(u)
 
     user.save()
 
@@ -77,11 +68,8 @@ def matching_render(request):
     context = dict()
 
     for i in male_set:
-        li = []
         Q_pid(i)
-        for j in i.Q_pid_list.all():
-            li.append(j.username)
-        context[i.pk] = li
+        context[i.pk] = i.Q_pid_list.all().username
 
     return render(
         request,

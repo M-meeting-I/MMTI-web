@@ -19,10 +19,7 @@ class TestView(TestCase):
             user_kakaoid='tlarbdnjs33',
             want_age_min=20,
             want_age_max=22,
-            want_mbti_1='xxooo',
-            want_mbti_2='ooooo',
-            want_mbti_3='xxooo',
-            want_mbti_4='ooooo',
+            want_mbti='istj'
         )
         self.user_female_001 = UserSurvey.objects.create(
             user_sex=False,
@@ -36,10 +33,7 @@ class TestView(TestCase):
             user_kakaoid='joyjoy',
             want_age_min=20,
             want_age_max=22,
-            want_mbti_1='xxxoo',
-            want_mbti_2='ooooo',
-            want_mbti_3='xxooo',
-            want_mbti_4='ooooo',
+            want_mbti='istj'
         )
         self.user_female_002 = UserSurvey.objects.create(
             user_sex=False,
@@ -53,10 +47,7 @@ class TestView(TestCase):
             user_kakaoid='wendy',
             want_age_min=20,
             want_age_max=22,
-            want_mbti_1='xxxoo',
-            want_mbti_2='ooooo',
-            want_mbti_3='xxooo',
-            want_mbti_4='ooooo',
+            want_mbti='enfp'
         )
 
     def test_matching(self):
