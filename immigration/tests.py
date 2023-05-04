@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
-from .models import UserSurvey
+from django.contrib.auth.models import User
+from .models import Profile
 from bs4 import BeautifulSoup
 
 # Create your tests here.
@@ -7,7 +8,13 @@ class TestView(TestCase):
 
     def setUp(self) -> None:
         self.client = Client()
-        self.user_male_001 = UserSurvey.objects.create(
+        self.user_q1 = User.objects.create_user(username='shimq1', password='somepassword')
+        self.user_joy = User.objects.create_user(username='조이', password='somepassword')
+        self.user_wendy = User.objects.create_user(username='웬디', password='somepassword')
+        
+
+        self.user_male_001 = Profile.objects.create(
+            user_model=self.user_q1,
             user_sex=True,
             user_name='심규원',
             user_age=21,
@@ -21,7 +28,8 @@ class TestView(TestCase):
             want_age_max=22,
             want_mbti='istj'
         )
-        self.user_female_001 = UserSurvey.objects.create(
+        self.user_female_001 = Profile.objects.create(
+            user_model=self.user_joy,
             user_sex=False,
             user_name='조이',
             user_age=20,
@@ -35,7 +43,8 @@ class TestView(TestCase):
             want_age_max=22,
             want_mbti='istj'
         )
-        self.user_female_002 = UserSurvey.objects.create(
+        self.user_female_002 = Profile.objects.create(
+            user_model=self.user_wendy,
             user_sex=False,
             user_name='웬디',
             user_age=20,

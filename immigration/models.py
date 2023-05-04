@@ -4,8 +4,17 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-class UserSurvey(models.Model):
-    user_model = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
+class Matching(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    matched_list = models.TextField()
+    last_matching_time = models.DateTimeField(auto_now=True)
+    ok_list = models.TextField()
+    final_matching = models.TextField()
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, blank=True, null=True, on_delete=models.CASCADE)
 
     user_sex = models.BooleanField()
     user_name = models.CharField(max_length=5)
@@ -18,8 +27,9 @@ class UserSurvey(models.Model):
     user_mbti_4 = models.CharField(max_length=5)
 
     user_school = models.CharField(max_length=20)
-    user_image = models.ImageField(upload_to='immigration/images/%Y/%m/%d/', null=True)
+    user_image = models.ImageField(upload_to='immigration/images/%Y/%m/%d/', null=True, blank=True)
     user_kakaoid = models.CharField(max_length=40)
+    user_password = models.CharField(max_length=20)
 
     want_age_min = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(40)])
     want_age_max = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(40)])
@@ -28,8 +38,6 @@ class UserSurvey(models.Model):
     want_mbti = models.CharField(max_length=80)
 
     user_survey_at = models.DateTimeField(auto_now_add=True)
-
-    Q_pid_list = models.ManyToManyField(User, blank=True, related_name='user_q_pid_list')
 
     def __str__(self) -> str:
         self.is_male = "여자"

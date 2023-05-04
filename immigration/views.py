@@ -1,27 +1,59 @@
+from django.contrib.auth.models import User
+from django.contrib.auth import login, authenticate
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
-from immigration.models import UserSurvey
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.db.models import Q
-import json
+
+from rest_framework import status, mixins, generics
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.decorators import action
+
+from .serializers import ProfileSerializer
+from .models import Profile
+
 
 # Create your views here.
 
-class UserSurveyCreate(CreateView):
-    model = UserSurvey
-    # 모델이름_form.html 에 연결 (모델이름 소문자!)
-    fields = "__all__" # ['first_name', 'last_name', ... ]
-    success_url = reverse_lazy('immigration:thankyou')
+class ProfileList(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  generics.GenericAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+    
+    def post(self, request):
+        serializer = ProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            profile = serializer.save()
+            profile.user = User.objects.create_user(username=serializer.data['user_kakaoid'], password=serializer.data['user_password'])
+            profile.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ProfileDetail(mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
+                    generics.GenericAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    lookup_field = 'user'
 
-def thankyou_view(request):
-    return render(
-        request,
-        'thankyou.html',
-    )
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
 
 def age_check(user):
-    result = UserSurvey.objects.filter(~Q(user_sex=user.user_sex)
+    result = Profile.objects.filter(~Q(user_sex=user.user_sex)
                                        & Q(user_age__gte=user.want_age_min)
                                        & Q(user_age__lte=user.want_age_max)
                                        & Q(want_age_min__lte=user.user_age)
@@ -73,7 +105,7 @@ def Q_pid(user):
 
 def matching_render(request):
     
-    male_set = UserSurvey.objects.filter(user_sex=True).all()
+    male_set = Profile.objects.filter(user_sex=True).all()
     context = dict()
 
     for i in male_set:
