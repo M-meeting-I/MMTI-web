@@ -1,5 +1,5 @@
 from django.contrib import admin
-from immigration.models import Profile, Matching
+from .models import Profile, Matching
 
 # Register your models here.
 
