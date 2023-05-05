@@ -15,7 +15,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "user_mbti_3",
             "user_mbti_4",
             "user_school",
-            #"user_image",
+            "user_image",
             "user_kakaoid",
             "user_password",
             "want_age_min",
