@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Profile
+from .models import Profile, Matching
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -22,3 +22,8 @@ class ProfileSerializer(serializers.ModelSerializer):
             "want_age_max",
             "want_mbti",
         )
+
+class MatchingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Matching
+        fields = ("user", "matched_list", "ok_list", "final_matching")

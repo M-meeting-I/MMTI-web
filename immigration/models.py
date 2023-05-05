@@ -9,8 +9,8 @@ class Matching(models.Model):
 
     matched_list = models.TextField()
     last_matching_time = models.DateTimeField(auto_now=True)
-    ok_list = models.TextField()
-    final_matching = models.TextField()
+    ok_list = models.TextField(null=True, blank=True)
+    final_matching = models.TextField(null=True, blank=True)
 
 
 class Profile(models.Model):

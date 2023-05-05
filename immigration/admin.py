@@ -1,6 +1,7 @@
 from django.contrib import admin
-from immigration.models import Profile
+from immigration.models import Profile, Matching
 
 # Register your models here.
 
 admin.site.register(Profile)
+admin.site.register(Matching)
