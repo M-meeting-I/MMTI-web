@@ -5,11 +5,12 @@ from .models import Profile, Matching
 import json
 
 def age_check(user):
-    result = Profile.objects.filter(~Q(user_sex=user.user_sex)
-                                       & Q(user_age__gte=user.want_age_min)
-                                       & Q(user_age__lte=user.want_age_max)
-                                       & Q(want_age_min__lte=user.user_age)
-                                       & Q(want_age_max__gte=user.user_age)).all()
+    result = Profile.objects.filter(~Q(user_sex=user.user_sex) 
+                                    & Q(is_active=True)
+                                    & Q(user_age__gte=user.want_age_min)
+                                    & Q(user_age__lte=user.want_age_max)
+                                    & Q(want_age_min__lte=user.user_age)
+                                    & Q(want_age_max__gte=user.user_age)).all()
     return result
 
 def mbti_check(user, age_set):
@@ -41,6 +42,11 @@ def mbti_check(user, age_set):
     
     return result
 
+def match_to_inactive(profile):
+    m_li = profile.user.matching.matched_list
+    if m_li != "[]":
+        profile.is_active = False
+
 
 def Q_pid(profile):
     
@@ -54,6 +60,7 @@ def Q_pid(profile):
     
     obj, created = Matching.objects.update_or_create(user=profile.user, defaults={'matched_list': json.dumps(mbti_result)})
     obj.save()
+    match_to_inactive(profile)
     
     me_pk = profile.user.pk
     for i in mbti_result:
@@ -65,3 +72,4 @@ def Q_pid(profile):
             old_list.append(me_pk)
             target.matching.matched_list = json.dumps(old_list)
             target.matching.save()
+        match_to_inactive(target.profile)

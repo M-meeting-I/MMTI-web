@@ -26,4 +26,4 @@ class ProfileSerializer(serializers.ModelSerializer):
 class MatchingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Matching
-        fields = ("user", "matched_list", "ok_list", "final_matching", "last_matching_time")
+        fields = ("user", "matched_list", "ok_list", "no_list", "final_matching", "last_matching_time")

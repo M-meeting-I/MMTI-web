@@ -8,13 +8,16 @@ class Matching(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     matched_list = models.TextField()
+
     last_matching_time = models.DateTimeField(auto_now=True)
     ok_list = models.TextField(null=True, blank=True)
+    no_list = models.TextField(null=True, blank=True)
     final_matching = models.TextField(null=True, blank=True)
 
 
 class Profile(models.Model):
     user = models.OneToOneField(User, blank=True, null=True, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
 
     user_sex = models.BooleanField()
     user_name = models.CharField(max_length=5)

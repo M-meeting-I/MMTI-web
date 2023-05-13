@@ -22,7 +22,9 @@ class ProfileList(mixins.ListModelMixin,
         serializer = ProfileSerializer(data=request.data)
         if serializer.is_valid():
             profile = serializer.save()
-            profile.user = User.objects.create_user(username=serializer.data['user_kakaoid'], password=serializer.data['user_password'])
+            profile.user = User.objects.create_user(
+                username=serializer.data['user_kakaoid'],
+                password=serializer.data['user_password'])
             profile.save()
             Q_pid(profile)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
