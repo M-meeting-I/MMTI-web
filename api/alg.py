@@ -2,6 +2,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from .models import Profile, Matching
 
+from haversine import haversine
 import json
 
 def age_check(user):
@@ -47,6 +48,54 @@ def match_to_inactive(profile):
     if m_li != "[]":
         profile.is_active = False
 
+def cal_score(profile_1, profile_2):
+    # 두 사람의 프로필을 받아서 두 사람 사이의 매칭 스코어를 계산하는 코드
+    score = 0
+    # 나이 고려
+    score += 400 - (abs(profile_1.user_age - profile_2.user_age) * 50)
+    # 거주지 고려
+    latlog = {"강남구" : (37.514575, 127.0495556),
+              "강동구" : (37.52736667, 127.1258639),
+              "강북구" : (37.63695556, 127.0277194),
+              "강서구" : (37.54815556, 126.851675),
+              "관악구" : (37.47538611, 126.9538444),
+              "광진구" : (37.53573889, 127.0845333),
+              "구로구" : (37.49265, 126.8895972),
+              "금천구" : (37.44910833, 126.9041972),
+              "노원구" : (37.65146111, 127.0583889),
+              "도봉구" : (37.66583333, 127.0495222),
+              "동대문구" : (37.571625, 127.0421417),
+              "동작구" : (37.50965556, 126.941575),
+              "마포구" : (37.56070556, 126.9105306),
+              "서대문구" : (37.57636667, 126.9388972),
+              "서초구" : (37.48078611, 127.0348111),
+              "성동구" : (37.56061111, 127.039),
+              "성북구" : (37.58638333, 127.0203333),
+              "송파구" : (37.51175556, 127.1079306),
+              "양천구" : (37.51423056, 126.8687083),
+              "영등포구" : (37.52361111, 126.8983417),
+              "용산구" : (37.53609444, 126.9675222),
+              "은평구" : (37.59996944, 126.9312417),
+              "종로구" : (37.57037778, 126.9816417),
+              "중구" : (37.56100278, 126.9996417),
+              "중랑구" : (37.60380556, 127.0947778),
+              }
+    place_1 = latlog[profile_1.user_residence]
+    place_2 = latlog[profile_2.user_residence]
+    distance = haversine(place_1, place_2, unit='km')
+    score += 400 - distance
+    
+    return score
+    
+
+
+def matching_sort(matching):
+    # matching : Matching 오브젝트
+    before_list = json.loads(matching.matched_list)
+    
+    # 여기에 점수순으로 정렬하는 코드
+
+
 
 def Q_pid(profile):
     
@@ -62,6 +111,7 @@ def Q_pid(profile):
     obj.save()
     match_to_inactive(profile)
     
+    # 상대의 matched_list 업데이트
     me_pk = profile.user.pk
     for i in mbti_result:
         target = User.objects.get(pk=i)

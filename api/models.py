@@ -29,8 +29,9 @@ class Profile(models.Model):
     user_mbti_3 = models.CharField(max_length=5)
     user_mbti_4 = models.CharField(max_length=5)
 
+    user_residence = models.CharField(max_length=10)
     user_school = models.CharField(max_length=20)
-    user_image = models.ImageField(upload_to='immigration/images/%Y/%m/%d/', null=True, blank=True)
+    # user_image = models.ImageField(upload_to='immigration/images/%Y/%m/%d/', null=True, blank=True)
     user_kakaoid = models.CharField(max_length=40)
     user_password = models.CharField(max_length=20)
 
